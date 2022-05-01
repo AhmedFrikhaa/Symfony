@@ -8,6 +8,8 @@
     <title>sayHello</title>
 </head>
 <body>
-<h1>just saying hello {{ nom }}   </h1>
+<h2>Today : {{ "now " | date("d/m/Y") }} is a good day</h2>
+<h1>just saying hello {{ nom | capitalize}}   </h1>
+<img src="{{ asset('assets/images/IMG_9846.jpg') ~ path |defaultImage}}">
 </body>
 </html>

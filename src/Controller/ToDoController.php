@@ -8,9 +8,10 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request as RequestAlias;
+#[Route('/todo')]
 class ToDoController extends AbstractController
 {
-    #[Route('/todo', name: 'Todo')]
+    #[Route('/', name: 'Todo')]
     public function index(RequestAlias $request): Response
     {
         // opening the session
@@ -27,7 +28,7 @@ class ToDoController extends AbstractController
         // show the array if it's already created
         return $this->render('to_do/index.html.twig');
     }
-    #[Route('/todo/add/{name}/{content}' , name : 'todo.add')]
+    #[Route('/add/{name?rien}/{content?rien du tout}' , name : 'todo.add'/*, defaults: ['name'=>'rien','content'=>'rien du tout']*/)]
     public function addTodo(RequestAlias $request ,$name ,$content):RedirectResponse{
         //verifier si j'ai mon tableau de todo dans la session
         $session=$request->getSession();
@@ -52,7 +53,7 @@ class ToDoController extends AbstractController
             return $this->redirectToRoute('Todo');
 
         }
-    #[Route('/todo/update/{name}/{content}' , name : 'todo.update')]
+    #[Route('/update/{name}/{content}' , name : 'todo.update')]
     public function updateTodo(RequestAlias $request ,$name ,$content):RedirectResponse{
         //verifier si j'ai mon tableau de todo dans la session
         $session=$request->getSession();
@@ -77,7 +78,7 @@ class ToDoController extends AbstractController
         return $this->redirectToRoute('Todo');
 
     }
-    #[Route('/todo/supp/{name}' , name : 'todo.Delete')]
+    #[Route('/supp/{name}' , name : 'todo.Delete')]
     public function suppTodo(RequestAlias $request ,$name ):RedirectResponse{
         //verifier si j'ai mon tableau de todo dans la session
         $session=$request->getSession();
@@ -102,7 +103,7 @@ class ToDoController extends AbstractController
         return $this->redirectToRoute('Todo');
 
     }
-    #[Route('/todo/reset' , name : 'todo.reset ')]
+    #[Route('/reset' , name : 'todo.reset ')]
     public function resetTodo(RequestAlias $request):RedirectResponse{
         //verifier si j'ai mon tableau de todo dans la session
         $session=$request->getSession();

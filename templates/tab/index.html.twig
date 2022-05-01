@@ -1,0 +1,25 @@
+{% extends 'template.html.twig' %}
+{% block body %}
+    {% block Pagetitle %}
+        table alea
+    {% endblock %}
+<table class="table" >
+    {% for  note in notes%}
+    <tr>
+        <td> {{ note }}</td>
+    </tr>
+{% endfor %}
+</table>
+<div class="alert alert-info">
+    <p>Nombre de notes : {{ notes | length }}</p>
+    <p>Note Minimale : {{ min(notes) }}</p>
+    <p>Note Maximale : {{ max(notes) }}</p>
+</div>
+    <div class="alert alert-warning">
+        Return to your Personal Page by clicking
+        <a href="{{path('first') }}">here  </a>
+    </div>
+{% endblock %}
+{% block title  %}
+Table
+{% endblock %}
