@@ -4,8 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Personne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Query;
 use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -50,20 +51,30 @@ class PersonneRepository extends ServiceEntityRepository
     // /**
     //  * @return Personne[] Returns an array of Personne objects
     //  */
-    /*
-    public function findByExampleField($value)
+
+    public function statfindPersonnesByAgeIntervalle($ageMin,$ageMax)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        $qb= $this->createQueryBuilder('p')
+            ->select('avg(p.age) as ageMoyen , count(p.id) as nbrPersonne');
+            $this->addIntervalle($qb,$ageMin,$ageMax);
+
+            return $qb->getQuery()->getScalarResult()
         ;
     }
-    */
+    public function findPersonnesByAgeIntervalle($ageMin,$ageMax)
+    {
+        $qb= $this->createQueryBuilder('p');
+        $this->addIntervalle($qb,$ageMin,$ageMax);
+        return $qb->getQuery()->getResult();
+    }
 
+    private function addIntervalle(QueryBuilder $qb , $ageMin , $ageMax){
+        $qb->andWhere('p.age  >= :ageMin and p.age <= :ageMax  ')
+            ->setParameter('ageMin', $ageMin)
+            ->setParameter('ageMax', $ageMax);
+            // ou bien on peut utiliser une 2eme méthode
+            //->setParameters(['ageMin'=>$ageMin , 'ageMax'=>$ageMax])
+    }
     /*
     public function findOneBySomeField($value): ?Personne
     {

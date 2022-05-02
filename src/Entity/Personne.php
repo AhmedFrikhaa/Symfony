@@ -3,11 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\PersonneRepository;
+use App\Traits\TimeStrapTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks()]
 #[ORM\Entity(repositoryClass: PersonneRepository::class)]
 class Personne
-{
+
+{// use TimeStrapTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -22,8 +27,24 @@ class Personne
     #[ORM\Column(type: 'smallint')]
     private $age;
 
-    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+
+    #[ORM\ManyToMany(targetEntity: Hobby::class)]
+    private $hobbies;
+
+    #[ORM\ManyToOne(targetEntity: Job::class, inversedBy: 'personnes')]
     private $job;
+
+    #[ORM\OneToOne(inversedBy: 'personne', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
+    private $profile;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $image;
+
+
+    public function __construct()
+    {
+        $this->hobbies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -66,15 +87,65 @@ class Personne
         return $this;
     }
 
-    public function getJob(): ?string
+    /**
+     * @return Collection<int, Hobby>
+     */
+    public function getHobbies(): Collection
+    {
+        return $this->hobbies;
+    }
+
+    public function addHobby(Hobby $hobby): self
+    {
+        if (!$this->hobbies->contains($hobby)) {
+            $this->hobbies[] = $hobby;
+        }
+
+        return $this;
+    }
+
+    public function removeHobby(Hobby $hobby): self
+    {
+        $this->hobbies->removeElement($hobby);
+
+        return $this;
+    }
+
+    public function getJob(): ?Job
     {
         return $this->job;
     }
 
-    public function setJob(?string $job): self
+    public function setJob(?Job $job): self
     {
         $this->job = $job;
 
         return $this;
     }
+
+    public function getProfile(): ?Profile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(?Profile $profile): self
+    {
+        $this->profile = $profile;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+
 }
